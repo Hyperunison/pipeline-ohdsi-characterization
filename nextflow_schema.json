@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "OHDSI Characterization",
+  "description": "Federated cohort characterization using the OHDSI Characterization package. Builds a cohort from UCDM data and runs baseline/incidence analyses against a local OMOP CDM.",
+  "type": "object",
+  "definitions": {
+    "database": {
+      "title": "Database connection",
+      "type": "object",
+      "properties": {
+        "dsn": {
+          "type": "string",
+          "description": "SQLAlchemy DSN for the OMOP CDM database (PostgreSQL or SQLite).",
+          "pattern": "^(postgres(ql)?(\\+\\w+)?|sqlite)://.*",
+          "example": "postgresql+psycopg2://user:pass@localhost:5432/omop"
+        },
+        "cdm_schema": {
+          "type": "string",
+          "description": "Database schema that contains the OMOP CDM tables (e.g. public, omop, dbo).",
+          "default": "public"
+        },
+        "work_schema": {
+          "type": "string",
+          "description": "Schema where the temporary cohort table will be created. Must be writable by the DB user. Defaults to cdm_schema.",
+          "default": "public"
+        }
+      },
+      "required": ["dsn", "cdm_schema"]
+    },
+    "cohort": {
+      "title": "Cohort configuration",
+      "type": "object",
+      "properties": {
+        "target_ids": {
+          "type": "string",
+          "description": "Comma-separated cohort_definition_id values to use as target cohorts (must match the cohort data returned by the UCDM query).",
+          "default": "1",
+          "pattern": "^\\d+(,\\d+)*$"
+        },
+        "outcome_ids": {
+          "type": "string",
+          "description": "Comma-separated cohort_definition_id values to use as outcome cohorts. Leave blank to run baseline characterization only.",
+          "default": "",
+          "pattern": "^(\\d+(,\\d+)*)?$"
+        }
+      }
+    },
+    "analysis": {
+      "title": "Analysis options",
+      "type": "object",
+      "properties": {
+        "database_id": {
+          "type": "string",
+          "description": "Short identifier for this database/site. Appears in result CSV files.",
+          "default": "local"
+        },
+        "min_cell_count": {
+          "type": "string",
+          "description": "Minimum patient count for a cell to be reported (0 = no suppression).",
+          "default": "0",
+          "pattern": "^\\d+$"
+        },
+        "threads": {
+          "type": "string",
+          "description": "Number of parallel threads for the analysis.",
+          "default": "1",
+          "pattern": "^[1-9]\\d*$"
+        }
+      }
+    }
+  },
+  "allOf": [
+    { "$ref": "#/definitions/database" },
+    { "$ref": "#/definitions/cohort" },
+    { "$ref": "#/definitions/analysis" }
+  ]
+}

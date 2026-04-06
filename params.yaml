@@ -1,0 +1,31 @@
+# Parameters for a local test run.
+# Pass this file to pipeline.py:  --params var/params_characterization.yaml
+
+# ── Database ──────────────────────────────────────────────────────────────────
+# SQLAlchemy DSN for the OMOP CDM database.
+dsn: "postgresql+psycopg2://user:password@localhost:5432/omop"
+
+# Schema that contains the OMOP CDM vocabulary and clinical tables.
+cdm_schema: "public"
+
+# Writable schema for the temporary cohort table (defaults to cdm_schema).
+work_schema: "public"
+
+# ── Cohort ────────────────────────────────────────────────────────────────────
+# cohort_definition_id values that represent the *target* cohort.
+# Must match the cohort_definition_id column returned by the UCDM query.
+target_ids: "1"
+
+# cohort_definition_id values for *outcome* cohorts.
+# Leave empty ("") to run baseline characterization only (no incidence / TTE).
+outcome_ids: ""
+
+# ── Analysis options ──────────────────────────────────────────────────────────
+# Short label that will appear in all output CSV files.
+database_id: "local"
+
+# Cells with fewer than this many patients are suppressed in the output.
+min_cell_count: 0
+
+# Number of parallel analysis threads.
+threads: 1
