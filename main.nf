@@ -10,6 +10,8 @@ process runCharacterization {
 
     publishDir '.', mode: 'copy', overwrite: true
 
+    container: 'entsupml/unison-runner-dqd-omop-5.4:0.1'
+
     input:
     path cohort_csv
     path r_script
