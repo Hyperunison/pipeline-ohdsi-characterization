@@ -50,7 +50,7 @@ def _build_cohort_csv(ucdm: List[Dict[str, str]]) -> str:
     writer.writeheader()
     for row in ucdm:
         writer.writerow({
-            'cohort_definition_id': row.get('cohort_definition_id', '1'),
+            'cohort_definition_id': '1',
             'subject_id':           row['participant_id'],
             'cohort_start_date':    row.get('cohort_start_date', '2000-01-01'),
             'cohort_end_date':      row.get('cohort_end_date',   '2001-01-01'),
