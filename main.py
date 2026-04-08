@@ -18,11 +18,32 @@ def get_input_files(ucdm: List[Dict[str, str]], parameters: Dict[str, str]) -> D
 
 
 def get_output_file_masks(parameters) -> Dict[str, str]:
-    return {
-        ".nextflow.log": ".nextflow.log",
-        "report.html":   "report.html",
-        "output/":       "output/",
-    }
+    # Only aggregate-level CSVs are exported.
+    # Excluded (may contain patient-level data):
+    #   - output/c_rechallenge_fail_case_series.csv (individual event offsets)
+    #   - output/execution/ (binary RDS/DuckDB files, logs with possible patient IDs)
+    safe_csvs = [
+        "output/c_execution_settings.csv",
+        "output/c_analysis_ref.csv",
+        "output/c_covariate_ref.csv",
+        "output/c_target_settings.csv",
+        "output/c_case_settings.csv",
+        "output/c_case_series_settings.csv",
+        "output/c_attrition.csv",
+        "output/c_target_covariates.csv",
+        "output/c_target_covariates_continuous.csv",
+        "output/c_risk_factor_covariates.csv",
+        "output/c_risk_factor_covariates_continuous.csv",
+        "output/c_case_series_covariates.csv",
+        "output/c_case_series_covariates_continuous.csv",
+        "output/c_dechallenge_rechallenge.csv",
+        "output/c_time_to_event.csv",
+        "output/export-complete.txt",
+    ]
+    masks = {f: "output/" for f in safe_csvs}
+    masks[".nextflow.log"] = ".nextflow.log"
+    masks["report.html"] = "report.html"
+    return masks
 
 
 def get_nextflow_cmd(input_files: Dict[str, str], parameters, run_name: str, weblog_url: str) -> str:
